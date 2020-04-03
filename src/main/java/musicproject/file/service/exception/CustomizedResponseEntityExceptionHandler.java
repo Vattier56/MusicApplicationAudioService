@@ -41,4 +41,13 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
+    /*404 Not Found Exception Handler -> File not found */
+    @ExceptionHandler(FileNotFoundException.class)
+    public final ResponseEntity<ExceptionResponse> handleMissingFilePException(FileNotFoundException exception, WebRequest webRequest) {
+
+        ExceptionResponse response = new ExceptionResponse(new Date(), exception.getMessage(), webRequest.getDescription(false));
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
 }

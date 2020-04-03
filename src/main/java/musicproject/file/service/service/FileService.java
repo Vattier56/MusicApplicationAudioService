@@ -15,8 +15,8 @@ import java.util.Objects;
 
 public class FileService {
 
-    /*DEFAULT PATH*/
-    private static final String FILE_PATH = new File("").getAbsolutePath() + "/ ";
+    /*DEFAULT WORKING DIRECTORY PATH*/
+    private static final String FILE_PATH = System.getProperty("user.dir") + "/ ";
 
     @Autowired
     private static Logger logger = LoggerFactory.getLogger(FileService.class);
@@ -30,6 +30,10 @@ public class FileService {
         } catch (Exception e){
             throw new FileProcessingException("Unable to save file");
         }
+    }
+
+    public static File findFileByPath(String fileName) {
+        return new File(FILE_PATH + fileName);
     }
 
     public static File convert(MultipartFile file) {
@@ -53,7 +57,7 @@ public class FileService {
             logger.error("File cleanup error !");
         }
         if(deleted) {
-            logger.info("Cleanup successful - file deleted");
+            logger.info("Cleanup successful - file deleted" + file.getName());
         }
     }
 }

@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
-
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -75,27 +74,23 @@ public class MetadataAudioFileService {
         }
     }
 
-    static String saveAudioFileProperties(String[] properties, File file) {
-        FieldKey[] keys = new FieldKey[] {FieldKey.TITLE, FieldKey.ARTIST, FieldKey.ALBUM, FieldKey.GENRE};
+    static void updateAudioFileTitle(String title, File file) {
+        FieldKey keyTitle = FieldKey.TITLE, authorTitle = FieldKey.ARTIST;
+        String []newFileTags = title.split(" - ");
 
         try{
             AudioFile audioFile = AudioFileIO.read(file);
             Tag audioTag = audioFile.getTag();
 
-            for (int i = 0; i < properties.length; i++) {
-                audioTag.setField(keys[i],properties[i]);
-            }
+            audioTag.setField(keyTitle, newFileTags[0]);
+            audioTag.setField(authorTitle, newFileTags[1]);
+
             audioFile.commit();
-
-            String[] fileEnd = file.getName().split("\\.");
-
-            return audioTag.getFirst(FieldKey.TITLE) + "." + fileEnd[fileEnd.length-1];
 
         } catch (IOException  | TagException | InvalidAudioFrameException | ReadOnlyFileException | CannotWriteException | CannotReadException e) {
             Logger logger = LoggerFactory.getLogger(MetadataAudioFileService.class);
             logger.error("Cannot commit file changes");
 
-            return file.getName();
         }
     }
 }
