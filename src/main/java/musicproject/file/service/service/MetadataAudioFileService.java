@@ -42,7 +42,6 @@ public class MetadataAudioFileService {
 
         } catch (CannotReadException e) {
             throw  new FileProcessingException("File extension not supported");
-
         } catch (IOException | TagException | InvalidAudioFrameException | ReadOnlyFileException | NoSuchMethodError e) {
             throw  new FileProcessingException("Cannot read metadata");
         }
@@ -71,26 +70,6 @@ public class MetadataAudioFileService {
 
         } else {
             return "";
-        }
-    }
-
-    static void updateAudioFileTitle(String title, File file) {
-        FieldKey keyTitle = FieldKey.TITLE, authorTitle = FieldKey.ARTIST;
-        String []newFileTags = title.split(" - ");
-
-        try{
-            AudioFile audioFile = AudioFileIO.read(file);
-            Tag audioTag = audioFile.getTag();
-
-            audioTag.setField(keyTitle, newFileTags[0]);
-            audioTag.setField(authorTitle, newFileTags[1]);
-
-            audioFile.commit();
-
-        } catch (IOException  | TagException | InvalidAudioFrameException | ReadOnlyFileException | CannotWriteException | CannotReadException e) {
-            Logger logger = LoggerFactory.getLogger(MetadataAudioFileService.class);
-            logger.error("Cannot commit file changes");
-
         }
     }
 }
